@@ -26,6 +26,7 @@ public class Constants {
 
     public static double launcherMinRPM = 2950;
     public static double velocitySlope = 600;
+    public static int WOW = 0;
 
     public static class OperatorConstants {
         //copied from YAGSL example
