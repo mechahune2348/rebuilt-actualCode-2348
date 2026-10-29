@@ -75,18 +75,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if(RobotContainer.mechanismsNonCommand.getRawButtonReleased(1) || RobotContainer.mechanismsNonCommand.getRawButtonReleased(5)){
-      CommandSubsystem.shooterIn.set(0);
-    }
-    //krakenmotor.set(c1.getLeftY()/2);
-    
-    // System.out.println(c1.getLeftY());
-
-    //System.out.println("Y: " + m_robotContainer.mechanismsController.getY());
-
-    // JPP.set(c1.getLeftY()/1.5);
-    // sparky.set(c1.getRightY());
-    //System.out.println("Intake Up/Down Encoder Position: " + m_robotContainer.robotCommands.intakeDownL.getEncoder().getPosition());
   }
 
   @Override
