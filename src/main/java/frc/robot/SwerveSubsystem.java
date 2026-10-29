@@ -30,19 +30,14 @@ import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveParser;
 
-//A lot of the stuff in this class is either pathplanner or making some of the SwerveDrive methods usable with this
-//That's probably why the subsystem class in YAGSL example is so huge
 public class SwerveSubsystem extends SubsystemBase{
     
     private final SwerveDrive  swerveDrive;
 
-    //unrelated(ish) but i'm glad I took APCS it's a fun class!! if you're reading this and haven't taken it and like programming u should take AP comp sci :) (2nd semester especially gets pretty interesting)
-
     public SwerveSubsystem(File swerveJsonDirectory) {
 
         boolean blueAlliance = false;
-        //startingPose copied from YAGSL example, it basically says if you're on the blue alliance then make the pose one thing and if not then do another thing
-        //? and : are basically an if/else if i understand this correctly
+        
         Pose2d startingPose = blueAlliance ? new Pose2d(new Translation2d(Meter.of(1),
                                                                       Meter.of(4)),
                                                     Rotation2d.fromDegrees(0))
@@ -50,13 +45,10 @@ public class SwerveSubsystem extends SubsystemBase{
                                                                       Meter.of(4)),
                                                     Rotation2d.fromDegrees(180));
 
-        try { //don't remove this try/catch (code needs to know what to do if it can't find one of the JSON files it needs)
+        try { 
             swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(Constants.maxSpeed,startingPose);
-            //i'm missing a json file but WHAT FILE IS MISSING AAAAAAAAAAAAAAAAAAAAAAAA
-            //so it turns out a file wasn't missing, i just didn't think to put this into a constructor at first...
         } catch(IOException e){
             throw new RuntimeException(e);
-            //learn what runtime exception means
         }
 
         swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
