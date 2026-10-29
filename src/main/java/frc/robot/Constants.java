@@ -5,7 +5,7 @@ import edu.wpi.first.math.util.Units;
 public class Constants {
     //put robot constants here
 
-    public static final double maxSpeed  = Units.feetToMeters(11.5);
+    public static final double maxSpeed  = Units.feetToMeters(6.5);
     public static double slowDriveSpeed = Units.feetToMeters(6.5);
     public static double intakeMoveMaxSpeed = 0.2; //speed intake goes up or down at
     public static double intakeMoveRange = 14.2; //old: 14.2 //encoder reading difference between intake up position and intake down position (may change based on gearbox) 
