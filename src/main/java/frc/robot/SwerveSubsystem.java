@@ -61,22 +61,8 @@ public class SwerveSubsystem extends SubsystemBase{
 
         swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
         swerveDrive.setCosineCompensator(false);//!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
-        swerveDrive.setAngularVelocityCompensation(true,
-                                               true,
-                                               0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
-        swerveDrive.setModuleEncoderAutoSynchronize(false,
-                                                1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
-        
-
-        //Set individual PIDs for modules here if needed, shouldn't be necessary tho (try inverting drive motors, IMU, and maybe angle motors in JSON files first)
-        //0-3 FL to BL clockwise
-        //Starting point: P = 0.0135, I = 0, D = 0.3
-        /*
-        swerveDrive.getModules()[0].setAnglePIDF(new PIDFConfig(0.0135,0,0,0)); //FL
-        swerveDrive.getModules()[1].setAnglePIDF(new PIDFConfig(0,0,0,0)); //FR
-        swerveDrive.getModules()[2].setAnglePIDF(new PIDFConfig(0,0,0,0)); //BL
-        swerveDrive.getModules()[3].setAnglePIDF(new PIDFConfig(0,0,0,0)); //BR
-        */
+        swerveDrive.setAngularVelocityCompensation(true, true, 0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
+        swerveDrive.setModuleEncoderAutoSynchronize(false, 1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
         
         setupPathPlanner();
     }
@@ -132,26 +118,6 @@ public class SwerveSubsystem extends SubsystemBase{
     public SwerveDrive getSwerveDrive(){
       return swerveDrive;
     }
-
-    public String printEncoder(int module){
-      double angleMotor = this.getSwerveDrive().getModules()[module].getAngleMotor().getPosition(); // getAbsoluteEncoder().getAbsolutePosition();
-      double driveMotor = this.getSwerveDrive().getModules()[module].getDriveMotor().getPosition();
-      double encoder = this.getSwerveDrive().getModules()[module].getAbsoluteEncoder().getAbsolutePosition();
-
-      return "Angle Motor: " + angleMotor + "\nDrive Motor: " + driveMotor + "\nEncoder: " + encoder + "\n- - - - - - - - - - - - - -";
-    }
-    
-    //For SmartDashboard (ignore for next year, somewhere said that shuffleboard is gonna be removed in 2027 season or something)
-    // public void initSendable(SendableBuilder builder){
-    //     builder.setSmartDashboardType("Encoders");
-
-    //     double frontLeftEncoder = this.getSwerveDrive().getModules()[0].getAbsoluteEncoder().getAbsolutePosition();
-    //     double frontRightEncoder = this.getSwerveDrive().getModules()[1].getAbsoluteEncoder().getAbsolutePosition();
-    //     double backLeftEncoder = this.getSwerveDrive().getModules()[2].getAbsoluteEncoder().getAbsolutePosition();
-    //     double backRightEncoder = this.getSwerveDrive().getModules()[3].getAbsoluteEncoder().getAbsolutePosition();
-        
-    //     builder.addDoubleProperty("FrontLeft",frontLeftEncoder,null);
-    // }
     
     /**
     * Drive the robot given a chassis field oriented velocity.
@@ -175,91 +141,12 @@ public class SwerveSubsystem extends SubsystemBase{
       });
     }
 
-    
-  /**
-   * Command to drive the robot using translative values and heading as angular velocity.
-   *
-   * @param translationX     Translation in the X direction. Cubed for smoother controls.
-   * @param translationY     Translation in the Y direction. Cubed for smoother controls.
-   * @param angularRotationX Angular velocity of the robot to set. Cubed for smoother controls.
-   * @return Drive command.
-   */
-  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
-  {
-    return run(() -> {
-      // Make the robot move
-      swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
-                            translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
-                            translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()), 0.8),
-                        Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisAngularVelocity(),
-                        true,
-                        false);
-    });
-  }
-
-  /**
-   * Returns a Command that tells the robot to drive forward until the command ends.
-   *
-   * @return a Command that tells the robot to drive forward until the command ends
-   */
-  public Command driveForward()
-  {
-    return run(() -> {
-      swerveDrive.drive(new Translation2d(1, 0), 0, false, false);
-    }).finallyDo(() -> swerveDrive.drive(new Translation2d(0, 0), 0, false, false));
-  }
-
   public Command getAutonomousCommand(String pathName)
   {
     // Create a path following command using AutoBuilder. This will also trigger event markers.
     return new PathPlannerAuto(pathName);
   }
-  /**
-   * Use PathPlanner Path finding to go to a point on the field.
-   *
-   * @param pose Target {@link Pose2d} to go to.
-   * @return PathFinding command
-   */
-  public Command driveToPose(Pose2d pose)
-  {
-// Create the constraints to use while pathfinding
-    PathConstraints constraints = new PathConstraints(
-        swerveDrive.getMaximumChassisVelocity(), 4.0,
-        swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
-
-// Since AutoBuilder is configured, we can use it to build pathfinding commands
-    return AutoBuilder.pathfindToPose(
-        pose,
-        constraints,
-        edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
-                                     );
-  }
-  /**
-   * Command to drive the robot using translative values and heading as a setpoint.
-   *
-   * @param translationX Translation in the X direction. Cubed for smoother controls.
-   * @param translationY Translation in the Y direction. Cubed for smoother controls.
-   * @param headingX     Heading X to calculate angle of the joystick.
-   * @param headingY     Heading Y to calculate angle of the joystick.
-   * @return Drive command.
-   */
-  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
-                              DoubleSupplier headingY)
-  {
-    // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
-    return run(() -> {
-
-      Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
-                                                                                 translationY.getAsDouble()), 0.8);
-
-      // Make the robot move
-      driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(),
-                                                                      headingX.getAsDouble(),
-                                                                      headingY.getAsDouble(),
-                                                                      swerveDrive.getOdometryHeading().getRadians(),
-                                                                      swerveDrive.getMaximumChassisVelocity()));
-    });
-  }
+  
   /**
    * Checks if the alliance is red, defaults to false if alliance isn't available.
    *
@@ -311,8 +198,5 @@ public class SwerveSubsystem extends SubsystemBase{
       zeroGyro();
     }
   }
-    // public void centerOnAprilTag(){
-
-    // }
 
 }

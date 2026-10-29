@@ -17,28 +17,14 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
  
   private final RobotContainer m_robotContainer;
-  // private final XboxController c1;
-  // private final TalonFX krakenmotor;
-  //private final SparkMax JPP;
-  //private final SparkMax sparky;
-  // double tx = LimelightHelpers.getTX("");  // Horizontal offset from crosshair to target in degrees
-  // double ty = LimelightHelpers.getTY("");  // Vertical offset from crosshair to target in degrees
-  // double ta = LimelightHelpers.getTA("");  // Target area (0% to 100% of image)
-  // boolean hasTarget = LimelightHelpers.getTV(""); // Do you have a valid target?
 
   public Robot() {
     m_robotContainer = new RobotContainer();
-    // c1 = new XboxController(0);
-    // krakenmotor = new TalonFX(53);
-    //JPP = new SparkMax(8,MotorType.kBrushless);
-    //sparky = new SparkMax(7,MotorType.kBrushless);
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    //m_robotContainer.printEncoders();
-
   }
 
   @Override

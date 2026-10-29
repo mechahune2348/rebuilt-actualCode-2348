@@ -60,23 +60,6 @@ public class RobotContainer {
   SwerveInputStream driveRobotOrientedInputStream = driveAngularVelocity.copy().robotRelative(true)
                                                              .allianceRelativeControl(false);                                                         
 
-
-  // DoubleSupplier limelightX = () -> tx;
-
-  // DoubleSupplier limelightY = () -> {
-  //   return Math.sqrt( Math.pow(ta,2) - Math.pow(tx,2) );
-  // };
-
-  // PIDController aaa = new PIDController(0,0,0);
-
-  // //controller range is -1 to 1 so figure out how to get from percentage (tA) to that range and from pixels (tX) to that range
-  // //maybe have a pixel range and ends of that range are -1 and 1 and center is center
-  // //
-  // SwerveInputStream limelightDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(limelightX,
-  //                                                                                            limelightY)
-  //                                                          .headingWhile(true).robotRelative(true)
-  //                                                            .allianceRelativeControl(false);          
-
   public RobotContainer() {
     configureBindings();
     NamedCommands.registerCommand("testCommand", Commands.print("I EXIST"));
